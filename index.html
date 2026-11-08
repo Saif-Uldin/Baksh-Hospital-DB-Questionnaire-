@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101d31">
+<link rel="icon" href="data:,">
+<title>Employee Information & Records — Discovery Questionnaire</title>
+<style>
+:root{
+  --navy:#14243a;--navy2:#203852;--ink:#243247;--muted:#68778b;
+  --paper:#f4f6f9;--white:#fff;--line:#e2e8f0;--gold:#c39a55;
+  --blue:#356b9a;--blue-soft:#edf4fa;--green:#28765c;--red:#a84b4b;
+  --shadow:0 16px 45px rgba(18,35,56,.08);--radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.65 "Segoe UI",Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+[hidden]{display:none!important}
+.topbar{background:linear-gradient(115deg,var(--navy),#1d3853);color:white;padding:26px max(22px,calc((100% - 1120px)/2));border-bottom:3px solid var(--gold)}
+.topbar-inner{max-width:1120px;margin:auto}
+.eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:#d9c29b;font-weight:700}
+h1{font-size:clamp(25px,4vw,37px);line-height:1.2;margin:9px 0 8px;font-weight:650;letter-spacing:-.025em}
+.topbar p{max-width:760px;color:#d7e0e9;margin:0}
+.container{max-width:1120px;margin:28px auto 70px;padding:0 20px;display:grid;grid-template-columns:245px minmax(0,1fr);gap:24px;align-items:start}
+.sidebar{position:sticky;top:18px;background:white;border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.progress-head{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);font-weight:700}
+.progress-track{height:7px;background:#edf0f4;border-radius:99px;overflow:hidden;margin:9px 0 18px}
+.progress-fill{height:100%;width:0;background:var(--gold);transition:width .2s}
+.nav-title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#8b96a5;font-weight:700;margin:16px 0 8px}
+.nav-list{display:grid;gap:4px}
+.nav-list a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#59677a;padding:8px 9px;border-radius:9px;font-size:13px}
+.nav-list a:hover,.nav-list a.active{background:var(--blue-soft);color:var(--navy);font-weight:650}
+.nav-num{width:22px;height:22px;border-radius:7px;background:#f0f2f5;display:grid;place-items:center;font-size:11px;flex:none}
+.nav-list a.active .nav-num{background:var(--navy);color:white}
+.side-note{border-top:1px solid var(--line);margin-top:18px;padding-top:14px;font-size:12px;color:var(--muted)}
+.content{min-width:0}
+.intro-card,.section,.end-card{background:white;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:18px}
+.intro-card{padding:23px 25px}
+.intro-card h2{font-size:19px;margin:0 0 8px;color:var(--navy)}
+.intro-card p{margin:6px 0;color:var(--muted)}
+.notice{margin-top:15px;background:#fff8ec;border-left:3px solid var(--gold);padding:11px 14px;border-radius:7px;color:#665638;font-size:13px}
+.notice.info{background:var(--blue-soft);border-left-color:var(--blue);color:#33516b}
+.section{padding:24px 25px;scroll-margin-top:20px}
+.section-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px}
+.section-num{width:36px;height:36px;border-radius:11px;background:var(--navy);color:white;display:grid;place-items:center;font-weight:700;flex:none}
+.section h2{margin:0;color:var(--navy);font-size:20px;line-height:1.3}
+.section-sub{margin:4px 0 0;color:var(--muted);font-size:13px}
+.question{padding:16px 0;border-top:1px solid #edf0f3}
+.question:first-of-type{border-top:0}
+.q-title{font-weight:650;color:#29394d;margin-bottom:5px}
+.q-help{font-size:12px;color:#7b8796;margin:0 0 10px}
+.choices{display:flex;flex-wrap:wrap;gap:8px}
+.choice{position:relative}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid #dce3eb;border-radius:9px;color:#58677a;background:white;cursor:pointer;font-size:13px;transition:.15s}
+.choice label:before{content:"";width:13px;height:13px;border:1.5px solid #aab5c3;border-radius:50%;display:inline-block;flex:none}
+.choice input:checked+label{border-color:var(--blue);background:var(--blue-soft);color:var(--navy);font-weight:650}
+.choice input:checked+label:before{border:4px solid var(--blue);background:white}
+.choice input:focus-visible+label{outline:3px solid #a9c9e4}
+.field{width:100%;border:1px solid #dce3eb;border-radius:9px;padding:10px 12px;color:var(--ink);background:#fff;outline:none}
+.field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #e6f0f8}
+.field[aria-invalid="true"]{border-color:var(--red);box-shadow:0 0 0 3px #f6e3e3}
+textarea.field{min-height:74px;resize:vertical}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-label{display:block;font-size:12px;color:#657489;font-weight:650;margin:8px 0 5px}
+.multi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.multi label{display:flex;align-items:flex-start;gap:9px;padding:9px 10px;border:1px solid #e1e6ed;border-radius:9px;font-size:13px;color:#526176;cursor:pointer}
+.multi input{margin-top:4px;accent-color:var(--blue)}
+.end-card{padding:23px 25px}
+.end-card h2{margin:0 0 5px;color:var(--navy);font-size:20px}
+.end-card p{margin:0 0 15px;color:var(--muted);font-size:13px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.btn{border:0;border-radius:10px;padding:11px 17px;font-weight:650;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:var(--navy);color:white}
+.btn-primary:hover{background:#254563}
+.btn-secondary{background:#eef2f6;color:#40536a}
+.btn-secondary:hover{background:#e2e9f0}
+.btn:focus-visible,.btn-add:focus-visible,.btn-remove:focus-visible{outline:3px solid #a9c9e4;outline-offset:2px}
+.footer{text-align:center;color:#8b96a5;font-size:11px;padding:10px}
+.review{display:none;margin-top:16px;border:1px solid var(--line);border-radius:10px;padding:14px;background:#fafbfd;max-height:300px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.55 ui-monospace,Consolas,"Courier New",monospace}
+.review div{min-height:1.55em}
+.required-note{font-size:12px;color:var(--muted)}
+
+/* ---- conditional follow-up questions ---- */
+.cond{display:grid;grid-template-rows:0fr;opacity:0;visibility:hidden;transition:grid-template-rows .26s ease,opacity .2s ease,visibility 0s linear .26s}
+.cond.open{grid-template-rows:1fr;opacity:1;visibility:visible;transition:grid-template-rows .26s ease,opacity .22s ease .04s,visibility 0s}
+.cond-inner{min-height:0;overflow:hidden;padding:0 4px;margin:0 -4px}
+.cond-pad{padding:4px 0 6px}
+.cond .cond{margin-top:2px}
+@media (prefers-reduced-motion:reduce){.cond,.cond.open{transition:none}}
+
+/* ---- repeatable file / link entries ---- */
+.rep-title{font-size:12px;font-weight:700;color:#657489;margin:10px 0 8px}
+.rep-hint{margin:6px 0 4px}
+.file-entry{border:1px solid #dde4ec;background:#fafbfd;border-radius:12px;padding:10px 14px 12px;margin-bottom:10px}
+.file-entry-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.file-entry-title{font-weight:700;color:var(--navy);font-size:13px}
+.file-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.file-grid .full{grid-column:1/-1}
+.btn-remove{background:none;border:0;color:var(--red);font-weight:650;font-size:12px;cursor:pointer;padding:8px 6px;border-radius:8px}
+.btn-remove:hover{background:#fbeeee}
+.btn-add{display:inline-flex;align-items:center;justify-content:center;border:1.5px dashed #b5c4d4;background:white;color:var(--blue);border-radius:10px;padding:10px 14px;font-weight:650;cursor:pointer;font-size:13px}
+.btn-add:hover{background:var(--blue-soft)}
+.link-err{color:var(--red);font-size:12px;margin-top:4px}
+.link-err:empty{display:none}
+.opt{font-weight:500;color:#8b96a5}
+
+/* ---- status / fallback ---- */
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.status{display:none;margin-top:14px;padding:12px 14px;border-radius:10px;font-size:13px;border-left:3px solid var(--blue);background:var(--blue-soft);color:var(--navy)}
+.status.show{display:block}
+.status.error{border-color:var(--red);background:#fbeeee;color:#6d2b2b}
+.status.ok{border-color:var(--green);background:#edf7f2;color:#1f5642}
+.fallback{display:none;margin-top:14px;padding:14px 16px;border-radius:12px;border:1px solid #ead9b8;background:#fff8ec;color:#5b4a2a;font-size:13px}
+.fallback.show{display:block}
+.fallback h3{margin:0 0 6px;font-size:15px;color:#4a3b1f}
+.fallback ol{margin:8px 0 0;padding-left:20px}
+.fallback li{margin:6px 0}
+.fallback .actions{margin-top:10px}
+
+@media(max-width:800px){
+  .container{grid-template-columns:minmax(0,1fr)}
+  .sidebar{position:static;padding:14px 16px;min-width:0}
+  .nav-title{display:none}
+  .nav-list{display:flex;overflow-x:auto;gap:6px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .nav-list a{white-space:nowrap;flex:none;border:1px solid var(--line)}
+  .progress-track{margin-bottom:12px}
+  .side-note{display:none}
+}
+@media(pointer:coarse),(max-width:640px){
+  .choice label{min-height:44px;padding:9px 14px}
+  .multi label{min-height:44px;align-items:center}
+  .btn-add,.btn-remove{min-height:44px}
+}
+@media(max-width:640px){.file-grid{grid-template-columns:1fr}}
+@media(max-width:520px){
+  .container{padding:0 12px;margin-top:15px}
+  .section,.intro-card,.end-card{padding:18px}
+  .field-row,.multi{grid-template-columns:1fr}
+  .topbar{padding:23px 18px}
+  .field{font-size:16px}
+  .actions .btn{width:100%}
+  .btn-add{width:100%}
+}
+@media print{
+  body{background:white}
+  .topbar{background:white;color:#14243a;border-bottom:1px solid #aaa}
+  .topbar p{color:#444}
+  .container{display:block;max-width:100%;margin:0}
+  .sidebar,.actions,.footer,.status,.fallback,#questionnaire,.end-card h2,.end-card p,.notice{display:none!important}
+  .section,.intro-card,.end-card{box-shadow:none;break-inside:avoid}
+  .review{display:block!important;max-height:none;overflow:visible;border:0;background:white;font-size:11px}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="eyebrow">Information gathering · Internal directory project</div>
+    <h1>Employee Information & Records</h1>
+    <p>Discovery questionnaire about the hospital's employee information, spreadsheets, records, and update procedures.</p>
+  </div>
+</header>
+
+<div class="sr-only" id="srStatus" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<div class="container">
+  <aside class="sidebar">
+    <div class="progress-head"><span>QUESTIONNAIRE PROGRESS</span><span id="progressText">0%</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="nav-title">Sections</div>
+    <nav class="nav-list" id="sectionNav" aria-label="Questionnaire sections">
+      <a href="#s1" class="active"><span class="nav-num">1</span> Available records</a>
+      <a href="#s2"><span class="nav-num">2</span> Who updates them?</a>
+      <a href="#s3"><span class="nav-num">3</span> Employee information</a>
+      <a href="#s4"><span class="nav-num">4</span> Which record is correct?</a>
+      <a href="#s5"><span class="nav-num">5</span> Employee journey</a>
+      <a href="#s6"><span class="nav-num">6</span> Changes & leaving</a>
+      <a href="#s7"><span class="nav-num">7</span> Website information</a>
+      <a href="#s8"><span class="nav-num">8</span> Access & contacts</a>
+      <a href="#s9"><span class="nav-num">9</span> Additional notes</a>
+    </nav>
+    <div class="side-note">It is completely acceptable to select <b>Not sure</b>. Please do not guess. The purpose is to understand the current process, not to test anyone's knowledge.</div>
+  </aside>
+
+  <main class="content">
+    <section class="intro-card">
+      <h2>Purpose of this questionnaire</h2>
+      <p>This questionnaire will help document where employee information is kept, who is responsible for it, how it is updated, and which record should be followed when information is different.</p>
+      <p>Please answer using the information you have. Every question is optional. If you do not know an answer, choose <b>Not sure</b> — that is a perfectly good answer. More questions appear only when they are needed.</p>
+      <div class="notice"><b>Please note:</b> This is an information-gathering exercise. It does not ask you to change any spreadsheet, system, or employee record. Do not include passwords, national ID numbers, medical details, or other sensitive personal information in your answers.</div>
+      <div class="notice info"><b>About links:</b> Where a question asks for a file, you can paste a link (for example from Google Drive, OneDrive, or SharePoint) so that I can find it. If you do not have a link, just write the file name.</div>
+      <div class="field-row" style="margin-top:15px">
+        <div><label class="field-label" for="respondent">Name of person completing this questionnaire</label><input class="field" id="respondent" dir="auto" placeholder="Name (optional)" autocomplete="name"></div>
+        <div><label class="field-label" for="date">Date</label><input class="field" id="date" type="date"></div>
+      </div>
+    </section>
+
+    <form id="questionnaire" novalidate>
+<section class="section" id="s1"><div class="section-head"><div class="section-num">1</div><div><h2>Available records and spreadsheets</h2><p class="section-sub">First, let us find the places where staff information is kept.</p></div></div><div class="question" id="qn1_1"><div class="q-title">1.1 Are there spreadsheets or Excel files with information about doctors or other hospital staff?</div><div class="choices" data-name="q1_1"></div><div class="cond" data-when="q1_1=Yes" data-label="Follow-up to question 1.1: spreadsheet names and links" role="group" aria-label="Follow-up to question 1.1: spreadsheet names and links"><div class="cond-inner"><div class="cond-pad"><p class="q-help rep-hint">Add a link if you have one. No link? Just write the name.</p><div class="file-repeater" data-id="r1_1" data-title="Spreadsheets or files" data-word="File" data-name-label="File or spreadsheet name" data-name-ph="For example: Doctors list" data-purpose-label="What is this file used for? (optional)" data-purpose-ph="For example: main list of doctors" data-add="+ Add another file / link" data-email="Files provided"></div></div></div></div></div><div class="question" id="qn1_2"><div class="q-title">1.2 Is staff information also kept in a hospital computer system or program (not only in spreadsheets)?</div><div class="choices" data-name="q1_2"></div><div class="cond" data-when="q1_2=Yes" data-label="Follow-up to question 1.2: system name and guides" role="group" aria-label="Follow-up to question 1.2: system name and guides"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q1_2_name">What is the system or program called? (if you know)</label><input class="field" id="q1_2_name" name="q1_2_name" data-elabel="System name" dir="auto" autocomplete="off" placeholder="System name"><p class="q-help rep-hint">If the system has a user guide or manual, you may add a link here. This is optional.</p><div class="file-repeater" data-id="r1_2" data-title="User guides or manuals for this system (optional)" data-word="Document" data-name-label="Document name" data-name-ph="For example: user guide" data-purpose-label="What is it about? (optional)" data-purpose-ph="For example: how to add a new employee" data-add="+ Add another document / link" data-email="System documents provided"></div></div></div></div></div><div class="question" id="qn1_3"><div class="q-title">1.3 Is staff information kept anywhere else?</div><div class="choices" data-name="q1_3"></div><div class="cond" data-when="q1_3=Yes" data-label="Follow-up to question 1.3: other places" role="group" aria-label="Follow-up to question 1.3: other places"><div class="cond-inner"><div class="cond-pad"><p class="q-help">Select all that apply.</p><div class="multi" data-group="q1_3_places" data-elabel="Other places"><label><input type="checkbox" name="q1_3_places" value="Paper files"> Paper files</label><label><input type="checkbox" name="q1_3_places" value="Email messages"> Email messages</label><label><input type="checkbox" name="q1_3_places" value="Shared folders or cloud storage"> Shared folders or cloud storage</label><label><input type="checkbox" name="q1_3_places" value="Another computer or local files"> Another computer or local files</label><label><input type="checkbox" name="q1_3_places" value="Other"> Other</label></div><div class="cond" data-when="q1_3_places=Shared folders or cloud storage" data-label="Shared folder links" role="group" aria-label="Shared folder links"><div class="cond-inner"><div class="cond-pad"><p class="q-help rep-hint">Add a link if you have one. No link? Just write the name.</p><div class="file-repeater" data-id="r1_3" data-title="Shared folders" data-word="Folder" data-name-label="Folder name" data-name-ph="For example: HR shared folder" data-purpose-label="What is kept in this folder? (optional)" data-purpose-ph="For example: staff photos" data-add="+ Add another folder / link" data-email="Folders provided"></div></div></div></div><div class="cond" data-when="q1_3_places=Other" data-label="Other place" role="group" aria-label="Other place"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q1_3_other">Where else is it kept?</label><input class="field" id="q1_3_other" name="q1_3_other" data-elabel="Other place" dir="auto" autocomplete="off" placeholder="Please describe"></div></div></div></div></div></div></div><div class="question" id="qn1_4"><div class="q-title">1.4 Are these files up to date and still being used?</div><div class="choices" data-name="q1_4"></div><div class="cond" data-when="q1_4=Yes|No" data-label="Follow-up to question 1.4: old or backup files" role="group" aria-label="Follow-up to question 1.4: old or backup files"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q1_4_details">Are any of the files old, unused, or only kept as a backup? (optional)</label><textarea class="field" id="q1_4_details" name="q1_4_details" data-elabel="Old, unused or backup files" dir="auto" placeholder="Please describe, if you know."></textarea></div></div></div></div></section>
+<section class="section" id="s2"><div class="section-head"><div class="section-num">2</div><div><h2>Who maintains and updates the records?</h2><p class="section-sub">We want to understand who looks after each file or system.</p></div></div><div class="question" id="qn2_1"><div class="q-title">2.1 Is there a particular person or department who updates staff information?</div><div class="choices" data-name="q2_1"></div><div class="cond" data-when="q2_1=Yes" data-label="Follow-up to question 2.1: person and department" role="group" aria-label="Follow-up to question 2.1: person and department"><div class="cond-inner"><div class="cond-pad"><div class="field-row"><div><label class="field-label" for="q2_1_person">Name of the person (or their job title)</label><input class="field" id="q2_1_person" name="q2_1_person" data-elabel="Person responsible" dir="auto" autocomplete="off" placeholder="Name or job title"></div><div><label class="field-label" for="q2_1_dept">Department</label><input class="field" id="q2_1_dept" name="q2_1_dept" data-elabel="Department" dir="auto" autocomplete="off" placeholder="For example: Human Resources"></div></div></div></div></div></div><div class="question" id="qn2_2"><div class="q-title">2.2 Do different people look after different spreadsheets or systems?</div><div class="choices" data-name="q2_2"></div><div class="cond" data-when="q2_2=Yes" data-label="Follow-up to question 2.2: who handles which record" role="group" aria-label="Follow-up to question 2.2: who handles which record"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q2_2_details">Who looks after which file or system?</label><textarea class="field" id="q2_2_details" name="q2_2_details" data-elabel="Who handles which record" dir="auto" placeholder="File or system: person or department"></textarea></div></div></div></div><div class="question" id="qn2_3"><div class="q-title">2.3 How are changes usually made to the records?</div><div class="multi" data-group="q2_3" data-elabel="Answer"><label><input type="checkbox" name="q2_3" value="A person edits the spreadsheet by hand"> A person edits the spreadsheet by hand</label><label><input type="checkbox" name="q2_3" value="Information is typed into an online form"> Information is typed into an online form</label><label><input type="checkbox" name="q2_3" value="Information arrives automatically from another system"> Information arrives automatically from another system</label><label><input type="checkbox" name="q2_3" value="A person sends the changes by email or message"> A person sends the changes by email or message</label><label><input type="checkbox" name="q2_3" value="Not sure"> Not sure</label><label><input type="checkbox" name="q2_3" value="Other"> Other</label></div><div class="cond" data-when="q2_3=Other" data-label="Other way of making changes" role="group" aria-label="Other way of making changes"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q2_3_other">Please describe the other way</label><input class="field" id="q2_3_other" name="q2_3_other" data-elabel="Other way" dir="auto" autocomplete="off" placeholder=""></div></div></div><div class="cond" data-when="q2_3=*" data-label="More about how changes are made" role="group" aria-label="More about how changes are made"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q2_3_details">In your own words, how does a change reach the person who updates the record? (optional)</label><textarea class="field" id="q2_3_details" name="q2_3_details" data-elabel="How a change reaches the person" dir="auto" placeholder=""></textarea></div></div></div></div><div class="question" id="qn2_4"><div class="q-title">2.4 How often are staff records checked or updated?</div><div class="choices" data-name="q2_4" data-options="Daily|Weekly|Monthly|When a change is reported|At specific times of the year|Not sure"></div><div class="cond" data-when="q2_4=Daily|Weekly|Monthly|At specific times of the year" data-label="Follow-up to question 2.4: schedule" role="group" aria-label="Follow-up to question 2.4: schedule"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q2_4_details">Is there a fixed day or time? (optional)</label><input class="field" id="q2_4_details" name="q2_4_details" data-elabel="Fixed day or time" dir="auto" autocomplete="off" placeholder="For example: every Sunday, end of each month"></div></div></div></div><div class="question" id="qn2_5"><div class="q-title">2.5 Does someone check or approve a change before it is accepted?</div><div class="choices" data-name="q2_5"></div><div class="cond" data-when="q2_5=Yes" data-label="Follow-up to question 2.5: who approves" role="group" aria-label="Follow-up to question 2.5: who approves"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q2_5_details">Who checks or approves it?</label><input class="field" id="q2_5_details" name="q2_5_details" data-elabel="Who checks or approves" dir="auto" autocomplete="off" placeholder="Name, job title, or department"></div></div></div></div></section>
+<section class="section" id="s3"><div class="section-head"><div class="section-num">3</div><div><h2>Information recorded for each employee</h2><p class="section-sub">Please select the details that are kept in any of the records or systems.</p></div></div><div class="question" id="qn3_1"><div class="q-title">3.1 Which of the following details are recorded for staff?</div><p class="q-help">Select all that you know are recorded. It is fine if the details are kept in different places.</p><div class="multi" data-group="q3_1" data-elabel="Answer"><label><input type="checkbox" name="q3_1" value="Full name"> Full name</label><label><input type="checkbox" name="q3_1" value="Employee or staff number"> Employee or staff number</label><label><input type="checkbox" name="q3_1" value="Job title or professional rank"> Job title or professional rank</label><label><input type="checkbox" name="q3_1" value="Department"> Department</label><label><input type="checkbox" name="q3_1" value="Specialty"> Specialty</label><label><input type="checkbox" name="q3_1" value="Branch or work location"> Branch or work location</label><label><input type="checkbox" name="q3_1" value="Employment status"> Employment status</label><label><input type="checkbox" name="q3_1" value="Start date or joining date"> Start date or joining date</label><label><input type="checkbox" name="q3_1" value="Work phone or extension"> Work phone or extension</label><label><input type="checkbox" name="q3_1" value="Work email"> Work email</label><label><input type="checkbox" name="q3_1" value="Clinic or room number"> Clinic or room number</label><label><input type="checkbox" name="q3_1" value="Working days and schedule"> Working days and schedule</label><label><input type="checkbox" name="q3_1" value="Consultation availability"> Consultation availability</label><label><input type="checkbox" name="q3_1" value="Profile photo"> Profile photo</label><label><input type="checkbox" name="q3_1" value="Biography or professional description"> Biography or professional description</label><label><input type="checkbox" name="q3_1" value="Qualifications or certificates"> Qualifications or certificates</label><label><input type="checkbox" name="q3_1" value="Leave or absence information"> Leave or absence information</label><label><input type="checkbox" name="q3_1" value="Other information"> Other information</label><label><input type="checkbox" name="q3_1" value="Not sure"> Not sure</label></div><div class="cond" data-when="q3_1=Other information" data-label="Other information recorded" role="group" aria-label="Other information recorded"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q3_1_details">What other information is recorded?</label><textarea class="field" id="q3_1_details" name="q3_1_details" data-elabel="Other information recorded" dir="auto" placeholder="List anything not shown above."></textarea></div></div></div></div><div class="question" id="qn3_2"><div class="q-title">3.2 Is the same staff information written in more than one place?</div><div class="choices" data-name="q3_2"></div><div class="cond" data-when="q3_2=Yes" data-label="Follow-up to question 3.2: repeated details" role="group" aria-label="Follow-up to question 3.2: repeated details"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q3_2_details">Which details are repeated, and where?</label><textarea class="field" id="q3_2_details" name="q3_2_details" data-elabel="Repeated details" dir="auto" placeholder="For example: name and department appear in both a spreadsheet and the hospital system."></textarea></div></div></div></div><div class="question" id="qn3_3"><div class="q-title">3.3 Does each person have a unique number or code (such as a staff number)?</div><div class="choices" data-name="q3_3"></div><div class="cond" data-when="q3_3=Yes" data-label="Follow-up to question 3.3: where the number is found" role="group" aria-label="Follow-up to question 3.3: where the number is found"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q3_3_details">Where can this number be found?</label><input class="field" id="q3_3_details" name="q3_3_details" data-elabel="Where the number is found" dir="auto" autocomplete="off" placeholder="Which system or document?"></div></div></div></div></section>
+<section class="section" id="s4"><div class="section-head"><div class="section-num">4</div><div><h2>Which record to follow when information is different</h2><p class="section-sub">For example, a person&#x27;s department is different in two files.</p></div></div><div class="question" id="qn4_1"><div class="q-title">4.1 Do two records ever show different information for the same person?</div><p class="q-help">Please do not include real names or private details in the example.</p><div class="choices" data-name="q4_1"></div><div class="cond" data-when="q4_1=Yes" data-label="Follow-up to question 4.1: example" role="group" aria-label="Follow-up to question 4.1: example"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q4_1_details">Please give a simple example</label><textarea class="field" id="q4_1_details" name="q4_1_details" data-elabel="Example" dir="auto" placeholder="For example: one file shows the old department and another shows the new one."></textarea></div></div></div></div><div class="question" id="qn4_2"><div class="q-title">4.2 Is there one main file or system that everyone should trust as the correct one?</div><div class="choices" data-name="q4_2"></div><div class="cond" data-when="q4_2=Yes" data-label="Follow-up to question 4.2: the main file or system" role="group" aria-label="Follow-up to question 4.2: the main file or system"><div class="cond-inner"><div class="cond-pad"><p class="q-help rep-hint">Add a link if you have one. No link? Just write the name.</p><div class="file-repeater" data-id="r4_2" data-title="The main file or system" data-word="Item" data-name-label="Name of the file or system" data-name-ph="For example: HR system" data-purpose-label="Anything to add? (optional)" data-purpose-ph="" data-add="+ Add another file / link" data-email="Main file or system"></div></div></div></div></div><div class="question" id="qn4_3"><div class="q-title">4.3 Does the correct record depend on the type of information?</div><p class="q-help">For example, Human Resources may confirm whether someone is still employed, while a department confirms a clinic schedule.</p><div class="choices" data-name="q4_3"></div><div class="cond" data-when="q4_3=Yes" data-label="Follow-up to question 4.3: examples" role="group" aria-label="Follow-up to question 4.3: examples"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q4_3_details">Examples you know</label><textarea class="field" id="q4_3_details" name="q4_3_details" data-elabel="Examples" dir="auto" placeholder="Type of information: who or what confirms it"></textarea></div></div></div></div><div class="question" id="qn4_4"><div class="q-title">4.4 When two records disagree, who decides which one is correct?</div><div class="choices" data-name="q4_4" data-options="Human Resources|Medical Affairs|The employee&#x27;s department|Hospital management|The person who looks after that file|No fixed person or process|Not sure"></div><div class="cond" data-when="q4_4=Human Resources|Medical Affairs|The employee&#x27;s department|Hospital management|The person who looks after that file" data-label="Follow-up to question 4.4: name or role" role="group" aria-label="Follow-up to question 4.4: name or role"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q4_4_details">Name or job title (optional)</label><input class="field" id="q4_4_details" name="q4_4_details" data-elabel="Name or role" dir="auto" autocomplete="off" placeholder="Please add it if you know."></div></div></div></div><div class="question" id="qn4_5"><div class="q-title">4.5 Is there a written rule or procedure for this?</div><div class="choices" data-name="q4_5"></div><div class="cond" data-when="q4_5=Yes" data-label="Follow-up to question 4.5: where to find it" role="group" aria-label="Follow-up to question 4.5: where to find it"><div class="cond-inner"><div class="cond-pad"><p class="q-help rep-hint">Add a link if you have one. No link? Just write the name.</p><div class="file-repeater" data-id="r4_5" data-title="Written procedure" data-word="Document" data-name-label="Document name" data-name-ph="For example: Staff data update procedure" data-purpose-label="Anything to add? (optional)" data-purpose-ph="" data-add="+ Add another document / link" data-email="Procedures provided"></div><label class="field-label" for="q4_5_details">If it is not online, where can it be found? (optional)</label><input class="field" id="q4_5_details" name="q4_5_details" data-elabel="Where to find it" dir="auto" autocomplete="off" placeholder="For example: printed copy in the HR office"></div></div></div></div></section>
+<section class="section" id="s5"><div class="section-head"><div class="section-num">5</div><div><h2>How a person&#x27;s information is first created</h2><p class="section-sub">We would like to follow the process from the beginning, when a new employee joins the hospital.</p></div></div><div class="question" id="qn5_1"><div class="q-title">5.1 When a new employee joins, who records their information first?</div><div class="choices" data-name="q5_1" data-options="Human Resources|Medical Affairs|The employee&#x27;s department|Administration|Another department|Not sure"></div><div class="cond" data-when="q5_1=Human Resources|Medical Affairs|The employee&#x27;s department|Administration|Another department" data-label="Follow-up to question 5.1: name" role="group" aria-label="Follow-up to question 5.1: name"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q5_1_details">Name of the person or department (optional)</label><input class="field" id="q5_1_details" name="q5_1_details" data-elabel="Person or department" dir="auto" autocomplete="off" placeholder="First point of registration"></div></div></div></div><div class="question" id="qn5_2"><div class="q-title">5.2 What usually happens after the information is first recorded?</div><div class="multi" data-group="q5_2" data-elabel="Answer"><label><input type="checkbox" name="q5_2" value="Entered into the hospital system"> Entered into the hospital system</label><label><input type="checkbox" name="q5_2" value="Added to a spreadsheet"> Added to a spreadsheet</label><label><input type="checkbox" name="q5_2" value="The department is informed"> The department is informed</label><label><input type="checkbox" name="q5_2" value="A work email or account is created"> A work email or account is created</label><label><input type="checkbox" name="q5_2" value="Sent to other departments"> Sent to other departments</label><label><input type="checkbox" name="q5_2" value="Not sure"> Not sure</label><label><input type="checkbox" name="q5_2" value="Other"> Other</label></div><div class="cond" data-when="q5_2=Other" data-label="Other step" role="group" aria-label="Other step"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q5_2_other">Please describe the other step</label><input class="field" id="q5_2_other" name="q5_2_other" data-elabel="Other step" dir="auto" autocomplete="off" placeholder=""></div></div></div><div class="cond" data-when="q5_2=*" data-label="Order of the steps" role="group" aria-label="Order of the steps"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q5_2_details">In what order does this happen? (optional)</label><textarea class="field" id="q5_2_details" name="q5_2_details" data-elabel="Order of the steps" dir="auto" placeholder="For example: first HR registers the employee, then the department confirms, then the list is updated."></textarea></div></div></div></div><div class="question" id="qn5_3"><div class="q-title">5.3 Is the same information copied or sent to several systems or spreadsheets?</div><div class="choices" data-name="q5_3"></div><div class="cond" data-when="q5_3=Yes" data-label="Follow-up to question 5.3: where it is sent" role="group" aria-label="Follow-up to question 5.3: where it is sent"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q5_3_details">Which systems, spreadsheets or departments receive it?</label><textarea class="field" id="q5_3_details" name="q5_3_details" data-elabel="Where it is sent" dir="auto" placeholder="List any you know."></textarea></div></div></div></div><div class="question" id="qn5_4"><div class="q-title">5.4 Does someone confirm the information before it is used publicly or for daily work?</div><div class="choices" data-name="q5_4"></div><div class="cond" data-when="q5_4=Yes" data-label="Follow-up to question 5.4: who confirms" role="group" aria-label="Follow-up to question 5.4: who confirms"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q5_4_details">Who confirms it?</label><input class="field" id="q5_4_details" name="q5_4_details" data-elabel="Who confirms" dir="auto" autocomplete="off" placeholder="Department or job title"></div></div></div></div></section>
+<section class="section" id="s6"><div class="section-head"><div class="section-num">6</div><div><h2>Changes, transfers, leave, and departures</h2><p class="section-sub">A person&#x27;s information can change after the first registration.</p></div></div><div class="question" id="qn6_1"><div class="q-title">6.1 When someone changes department, position, branch, or work location, how is the change reported?</div><div class="choices" data-name="q6_1" data-options="The responsible department updates the system|A person sends a request or notification|The employee informs the department|A form is submitted|Other|Not sure"></div><div class="cond" data-when="q6_1=The responsible department updates the system|A person sends a request or notification|The employee informs the department|A form is submitted|Other" data-label="Follow-up to question 6.1: who reports or approves" role="group" aria-label="Follow-up to question 6.1: who reports or approves"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q6_1_details">Who usually reports or approves the change? (optional)</label><input class="field" id="q6_1_details" name="q6_1_details" data-elabel="Who reports or approves" dir="auto" autocomplete="off" placeholder="Person, department, or process"></div></div></div></div><div class="question" id="qn6_2"><div class="q-title">6.2 When someone goes on leave or is temporarily away, is this written down somewhere?</div><div class="choices" data-name="q6_2"></div><div class="cond" data-when="q6_2=Yes" data-label="Follow-up to question 6.2: where it is recorded" role="group" aria-label="Follow-up to question 6.2: where it is recorded"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q6_2_details">Where is it recorded, and who updates it?</label><textarea class="field" id="q6_2_details" name="q6_2_details" data-elabel="Where it is recorded" dir="auto" placeholder="Spreadsheet, hospital system, department record, or other"></textarea></div></div></div></div><div class="question" id="qn6_3"><div class="q-title">6.3 When someone leaves the hospital, retires, or their contract ends, what happens to their record?</div><div class="choices" data-name="q6_3" data-options="The person is marked as inactive|The record is deleted|The record is archived or kept for reference|Different records are handled differently|Not sure"></div><div class="cond" data-when="q6_3=The person is marked as inactive|The record is deleted|The record is archived or kept for reference|Different records are handled differently" data-label="Follow-up to question 6.3: who informs" role="group" aria-label="Follow-up to question 6.3: who informs"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q6_3_details">Who tells the people who update the records? (optional)</label><input class="field" id="q6_3_details" name="q6_3_details" data-elabel="Who informs" dir="auto" autocomplete="off" placeholder="Department or job title"></div></div></div></div><div class="question" id="qn6_4"><div class="q-title">6.4 Are the previous details kept so that changes can be reviewed later?</div><div class="choices" data-name="q6_4"></div><div class="cond" data-when="q6_4=Yes" data-label="Follow-up to question 6.4: where previous details are kept" role="group" aria-label="Follow-up to question 6.4: where previous details are kept"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q6_4_details">Where are the previous details kept?</label><input class="field" id="q6_4_details" name="q6_4_details" data-elabel="Where previous details are kept" dir="auto" autocomplete="off" placeholder="System, archive, file, or not sure"></div></div></div></div><div class="question" id="qn6_5"><div class="q-title">6.5 When someone&#x27;s information changes, are all the relevant records updated?</div><div class="choices" data-name="q6_5"></div><div class="cond" data-when="q6_5=No" data-label="Follow-up to question 6.5: records that are missed" role="group" aria-label="Follow-up to question 6.5: records that are missed"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q6_5_details">Which records are sometimes missed?</label><textarea class="field" id="q6_5_details" name="q6_5_details" data-elabel="Records sometimes missed" dir="auto" placeholder="Please describe any gaps you know about."></textarea></div></div></div></div></section>
+<section class="section" id="s7"><div class="section-head"><div class="section-num">7</div><div><h2>Information shown on the hospital website</h2><p class="section-sub">This section is about the information that patients or visitors can see.</p></div></div><div class="question" id="qn7_1"><div class="q-title">7.1 Is there a separate spreadsheet or file used to prepare the information for the hospital website?</div><div class="choices" data-name="q7_1"></div><div class="cond" data-when="q7_1=Yes" data-label="Follow-up to question 7.1: website file and who updates it" role="group" aria-label="Follow-up to question 7.1: website file and who updates it"><div class="cond-inner"><div class="cond-pad"><p class="q-help rep-hint">Add a link if you have one. No link? Just write the name.</p><div class="file-repeater" data-id="r7_1" data-title="Website spreadsheets or files" data-word="File" data-name-label="File or spreadsheet name" data-name-ph="For example: Website doctors list" data-purpose-label="What is this file used for? (optional)" data-purpose-ph="For example: doctor names and clinic days shown on the website" data-add="+ Add another file / link" data-email="Files provided"></div><label class="field-label" for="q7_1_who">Who updates it?</label><input class="field" id="q7_1_who" name="q7_1_who" data-elabel="Who updates it" dir="auto" autocomplete="off" placeholder="Name, job title, or department"></div></div></div></div><div class="question" id="qn7_2"><div class="q-title">7.2 Who confirms the information shown to patients, such as name, specialty, department, and clinic schedule?</div><div class="choices" data-name="q7_2" data-options="Human Resources|Medical Affairs|The employee&#x27;s department|The employee themselves|Website or communications team|More than one of these|Not sure"></div><div class="cond" data-when="q7_2=Human Resources|Medical Affairs|The employee&#x27;s department|The employee themselves|Website or communications team|More than one of these" data-label="Follow-up to question 7.2: more detail" role="group" aria-label="Follow-up to question 7.2: more detail"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q7_2_details">Please explain, if you know (optional)</label><input class="field" id="q7_2_details" name="q7_2_details" data-elabel="Details" dir="auto" autocomplete="off" placeholder="Additional details"></div></div></div></div><div class="question" id="qn7_3"><div class="q-title">7.3 Are photos, biographies, clinic schedules, or other website details kept apart from the main staff record?</div><div class="choices" data-name="q7_3"></div><div class="cond" data-when="q7_3=Yes" data-label="Follow-up to question 7.3: where they are kept" role="group" aria-label="Follow-up to question 7.3: where they are kept"><div class="cond-inner"><div class="cond-pad"><p class="q-help rep-hint">Add a link if you have one. No link? Just write the name.</p><div class="file-repeater" data-id="r7_3" data-title="Folders or files with website details" data-word="Folder" data-name-label="Folder or file name" data-name-ph="For example: Doctor photos folder" data-purpose-label="What is kept there? (optional)" data-purpose-ph="For example: profile photos, biographies" data-add="+ Add another folder / file / link" data-email="Folders or files provided"></div><label class="field-label" for="q7_3_where">If there is no link, where are they kept? (optional)</label><input class="field" id="q7_3_where" name="q7_3_where" data-elabel="Where they are kept" dir="auto" autocomplete="off" placeholder="For example: shared folder, Google Drive, a department computer"></div></div></div></div><div class="question" id="qn7_4"><div class="q-title">7.4 Who approves changes to the information visible on the website?</div><div class="choices" data-name="q7_4" data-options="Human Resources|Medical Affairs|Department head|Hospital management|Website or communications team|Not sure"></div><div class="cond" data-when="q7_4=Human Resources|Medical Affairs|Department head|Hospital management|Website or communications team" data-label="Follow-up to question 7.4: name or role" role="group" aria-label="Follow-up to question 7.4: name or role"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q7_4_details">Name or job title (optional)</label><input class="field" id="q7_4_details" name="q7_4_details" data-elabel="Name or role" dir="auto" autocomplete="off" placeholder="Please add it if you know."></div></div></div></div><div class="question" id="qn7_5"><div class="q-title">7.5 Should some staff information stay inside the hospital and not be shown on the website?</div><div class="choices" data-name="q7_5"></div><div class="cond" data-when="q7_5=Yes" data-label="Follow-up to question 7.5: what should not be public" role="group" aria-label="Follow-up to question 7.5: what should not be public"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q7_5_details">What kinds of information should not be public?</label><textarea class="field" id="q7_5_details" name="q7_5_details" data-elabel="Information that should not be public" dir="auto" placeholder="Please describe in general terms. Do not include real private information."></textarea></div></div></div></div></section>
+<section class="section" id="s8"><div class="section-head"><div class="section-num">8</div><div><h2>Access, documents, and people to contact</h2><p class="section-sub">This will help us find the right people and documents for any follow-up.</p></div></div><div class="question" id="qn8_1"><div class="q-title">8.1 Do you know who can give access to the staff spreadsheets or systems?</div><div class="choices" data-name="q8_1"></div><div class="cond" data-when="q8_1=Yes" data-label="Follow-up to question 8.1: who to contact" role="group" aria-label="Follow-up to question 8.1: who to contact"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q8_1_details">Who should we contact?</label><input class="field" id="q8_1_details" name="q8_1_details" data-elabel="Person or department to contact" dir="auto" autocomplete="off" placeholder="Name or department"></div></div></div></div><div class="question" id="qn8_2"><div class="q-title">8.2 Are there written instructions, manuals, or procedures about how staff records are managed?</div><div class="choices" data-name="q8_2"></div><div class="cond" data-when="q8_2=Yes" data-label="Follow-up to question 8.2: instructions and manuals" role="group" aria-label="Follow-up to question 8.2: instructions and manuals"><div class="cond-inner"><div class="cond-pad"><p class="q-help rep-hint">Add a link if you have one. No link? Just write the name.</p><div class="file-repeater" data-id="r8_2" data-title="Instructions or manuals" data-word="Document" data-name-label="Document name" data-name-ph="For example: Employee file procedure" data-purpose-label="What is it about? (optional)" data-purpose-ph="" data-add="+ Add another document / link" data-email="Instructions or manuals provided"></div><label class="field-label" for="q8_2_where">If they are not online, where can they be found? (optional)</label><input class="field" id="q8_2_where" name="q8_2_where" data-elabel="Where to find them" dir="auto" autocomplete="off" placeholder="For example: printed copy in the HR office"></div></div></div></div><div class="question" id="qn8_3"><div class="q-title">8.3 Which departments would be best to speak with to understand the full process?</div><div class="multi" data-group="q8_3" data-elabel="Answer"><label><input type="checkbox" name="q8_3" value="Human Resources"> Human Resources</label><label><input type="checkbox" name="q8_3" value="Medical Affairs"> Medical Affairs</label><label><input type="checkbox" name="q8_3" value="Information Technology"> Information Technology</label><label><input type="checkbox" name="q8_3" value="Department secretaries"> Department secretaries</label><label><input type="checkbox" name="q8_3" value="Department heads"> Department heads</label><label><input type="checkbox" name="q8_3" value="Administration"> Administration</label><label><input type="checkbox" name="q8_3" value="Communications or website team"> Communications or website team</label><label><input type="checkbox" name="q8_3" value="Other"> Other</label></div><div class="cond" data-when="q8_3=*" data-label="Names or contact details" role="group" aria-label="Names or contact details"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q8_3_details">Names or contact details (optional)</label><textarea class="field" id="q8_3_details" name="q8_3_details" data-elabel="Names or contact details" dir="auto" placeholder="Please list the relevant people or departments."></textarea></div></div></div></div><div class="question" id="qn8_4"><div class="q-title">8.4 If the hospital approves, can the files be shared for review?</div><div class="choices" data-name="q8_4"></div><div class="cond" data-when="q8_4=Yes" data-label="Follow-up to question 8.4: who approves" role="group" aria-label="Follow-up to question 8.4: who approves"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q8_4_details">Who should approve this?</label><input class="field" id="q8_4_details" name="q8_4_details" data-elabel="Who should approve" dir="auto" autocomplete="off" placeholder="Name or department"></div></div></div></div></section>
+<section class="section" id="s9"><div class="section-head"><div class="section-num">9</div><div><h2>Additional information</h2><p class="section-sub">Anything else that may help us understand the current process.</p></div></div><div class="question" id="qn9_1"><div class="q-title">9.1 Is there anything important about staff records that was not covered above?</div><label class="field-label" for="q9_1">Your answer (optional)</label><textarea class="field" id="q9_1" name="q9_1" data-elabel="Answer" dir="auto" placeholder="Please write any additional information here."></textarea></div><div class="question" id="qn9_2"><div class="q-title">9.2 Are there any known problems with the current records or the way they are updated?</div><div class="multi" data-group="q9_2" data-elabel="Answer"><label><input type="checkbox" name="q9_2" value="Information is sometimes out of date"> Information is sometimes out of date</label><label><input type="checkbox" name="q9_2" value="Different files show different information"> Different files show different information</label><label><input type="checkbox" name="q9_2" value="No clear person is responsible"> No clear person is responsible</label><label><input type="checkbox" name="q9_2" value="Updates are delayed"> Updates are delayed</label><label><input type="checkbox" name="q9_2" value="Some information is missing"> Some information is missing</label><label><input type="checkbox" name="q9_2" value="No known problems"> No known problems</label><label><input type="checkbox" name="q9_2" value="Not sure"> Not sure</label><label><input type="checkbox" name="q9_2" value="Other"> Other</label></div><div class="cond" data-when="q9_2=*" data-label="Describe the problem" role="group" aria-label="Describe the problem"><div class="cond-inner"><div class="cond-pad"><label class="field-label" for="q9_2_details">Please explain in simple words (optional)</label><textarea class="field" id="q9_2_details" name="q9_2_details" data-elabel="Explanation" dir="auto" placeholder="Describe the problem."></textarea></div></div></div></div><div class="question" id="qn9_3"><div class="q-title">9.3 Who would be the best person to confirm any answers that are uncertain?</div><div class="field-row"><div><label class="field-label" for="q9_3_name">Name or job title</label><input class="field" id="q9_3_name" name="q9_3_name" data-elabel="Name or job title" dir="auto" autocomplete="off" placeholder="Name or job title"></div><div><label class="field-label" for="q9_3_dept">Department</label><input class="field" id="q9_3_dept" name="q9_3_dept" data-elabel="Department" dir="auto" autocomplete="off" placeholder="Department"></div></div></div></section>
+    </form>
+
+    <section class="end-card" id="endCard">
+      <h2>Review and submit</h2>
+      <p>When you are finished, select <b>Review answers</b> to check your answers. Then select <b>Open email draft</b>. Your email app will open with the recipient, subject, and answers already filled in. <b>Nothing is sent automatically</b> — please read the draft and press Send yourself.</p>
+      <p class="required-note">All questions are optional. Please answer only what you know. Selecting “Not sure” is a valid and useful answer.</p>
+      <div class="actions">
+        <button class="btn btn-secondary" type="button" id="reviewBtn">Review answers</button>
+        <button class="btn btn-primary" type="button" id="emailBtn">✉ Open email draft</button>
+        <button class="btn btn-secondary" type="button" id="mailtoBtn" hidden>Use my default email app instead</button>
+        <button class="btn btn-secondary" type="button" id="printBtn">Print / Save as PDF</button>
+      </div>
+      <div class="status" id="sendStatus" role="status"></div>
+      <div class="fallback" id="fallback" role="region" aria-label="Send by copy and paste">
+        <h3>Please paste your answers into an email</h3>
+        <p id="fallbackMsg" style="margin:0;color:inherit"></p>
+        <ol>
+          <li>Select <b>Copy answers</b> (it may already be copied).</li>
+          <li>Select <b>Open email app</b>. A new message to the right address will open.</li>
+          <li>Paste the answers into the message and press Send.</li>
+        </ol>
+        <div class="actions">
+          <button class="btn btn-primary js-copy" type="button" data-label="Copy answers">Copy answers</button>
+          <button class="btn btn-secondary" type="button" id="emptyMailBtn">Open email app</button>
+        </div>
+      </div>
+      <div class="review" id="reviewBox" aria-live="polite"></div>
+      <div class="actions" id="copyActions" style="display:none">
+        <button class="btn btn-secondary js-copy" type="button" data-label="Copy answers">Copy answers</button>
+      </div>
+    </section>
+    <div class="footer">Employee Information & Records · Internal discovery questionnaire</div>
+  </main>
+</div>
+<script>
+(function(){
+"use strict";
+/* ---------- settings ---------- */
+const RECIPIENT = "saifuldinmohammed@gmail.com";
+const SUBJECT = "Completed Employee Information & Records Questionnaire";
+// Conservative limits for the *encoded* URL length. Above these the page shows a copy-and-paste fallback
+// instead of risking a silently cut-off email.
+const LIMITS = { mobileMailto: 6000, desktopMailto: 2000, desktopGmail: 8000 };
+const DEFAULT_OPTIONS = ["Yes","No","Not sure"];
+const NEUTRAL = new Set(["Not sure","No known problems","None"]);   // do not count as "something was selected"
+const IND = "   ";
+const BAR = "=".repeat(40);
+
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const form = $("#questionnaire");
+form.addEventListener("submit", e => e.preventDefault());
+
+/* ---------- radio groups (Yes / No / Not sure and custom options) ---------- */
+$$(".choices").forEach(group => {
+  const name = group.dataset.name;
+  const options = group.dataset.options ? group.dataset.options.split("|") : DEFAULT_OPTIONS;
+  group.innerHTML = options.map((option, i) => {
+    const id = `${name}_${i}`;
+    return `<span class="choice"><input type="radio" id="${id}" name="${name}" value="${esc(option)}"><label for="${id}">${esc(option)}</label></span>`;
+  }).join("");
+  const q = group.closest(".question");
+  const title = q && $(".q-title", q);
+  if (title) {
+    if (!title.id) title.id = "t_" + q.id;
+    group.setAttribute("role", "radiogroup");
+    group.setAttribute("aria-labelledby", title.id);
+  }
+});
+$$(".multi[data-group]").forEach(g => {
+  const q = g.closest(".question"), title = q && $(".q-title", q);
+  if (title && !g.closest(".cond")) {
+    if (!title.id) title.id = "t_" + q.id;
+    g.setAttribute("role", "group");
+    g.setAttribute("aria-labelledby", title.id);
+  }
+});
+
+// local date (not UTC) so the date is right in the evening / just after midnight
+(function(){
+  const d = new Date(), p = n => String(n).padStart(2,"0");
+  $("#date").value = `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+})();
+
+/* ---------- announcements for screen readers ---------- */
+const sr = $("#srStatus");
+function announce(msg){ sr.textContent = ""; setTimeout(() => { sr.textContent = msg; }, 30); }
+
+/* ---------- link validation ---------- */
+function normalizeUrl(raw){
+  const v = String(raw || "").trim();
+  if (!v) return { ok: true, value: "" };
+  if (/\s/.test(v)) return { ok: false };
+  if (/^(javascript|data|vbscript|file|blob|mailto|tel|ftp):/i.test(v)) return { ok: false };
+  const candidate = /^https?:\/\//i.test(v) ? v : "https://" + v;
+  try {
+    const u = new URL(candidate);
+    if (!/^https?:$/.test(u.protocol)) return { ok: false };
+    const h = u.hostname;
+    if (!h.includes(".") || h.startsWith(".") || h.endsWith(".")) return { ok: false };
+    return { ok: true, value: candidate };
+  } catch (e) { return { ok: false }; }
+}
+function validateLink(input, fix){
+  const err = input.parentElement.querySelector(".link-err");
+  const r = normalizeUrl(input.value);
+  if (r.ok) {
+    input.removeAttribute("aria-invalid"); err.textContent = "";
+    if (fix && r.value && r.value !== input.value.trim()) input.value = r.value;
+    return true;
+  }
+  input.setAttribute("aria-invalid", "true");
+  err.textContent = "This does not look like a web link. A link usually starts with https:// . You can leave it empty if you do not have one.";
+  return false;
+}
+
+/* ---------- repeatable file / link entries ---------- */
+let entrySeq = 0;
+function buildRepeater(rep){
+  const d = rep.dataset;
+  rep.innerHTML = `<div class="rep-title">${esc(d.title || "Files")}</div><div class="rep-list"></div>` +
+    `<button type="button" class="btn-add">${esc(d.add || "+ Add another file / link")}</button>`;
+  addEntry(rep, false);
+}
+function renumber(rep){
+  const word = rep.dataset.word || "File";
+  $$(".file-entry", rep).forEach((e, i) => {
+    $(".file-entry-title", e).textContent = `${word} ${i+1}`;
+    $(".btn-remove", e).setAttribute("aria-label", `Remove ${word} ${i+1}`);
+  });
+}
+function addEntry(rep, focus){
+  const d = rep.dataset, id = ++entrySeq;
+  const el = document.createElement("div");
+  el.className = "file-entry";
+  el.innerHTML =
+    `<div class="file-entry-head"><span class="file-entry-title"></span><button type="button" class="btn-remove">Remove</button></div>` +
+    `<div class="file-grid">` +
+      `<div><label class="field-label" for="fn${id}">${esc(d.nameLabel || "File or spreadsheet name")}</label>` +
+        `<input class="field f-name" id="fn${id}" dir="auto" autocomplete="off" placeholder="${esc(d.namePh || "")}"></div>` +
+      `<div><label class="field-label" for="fl${id}">Shareable link <span class="opt">(optional)</span></label>` +
+        `<input class="field f-link" id="fl${id}" type="url" inputmode="url" dir="ltr" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="https://..." aria-describedby="fe${id}">` +
+        `<div class="link-err" id="fe${id}" role="alert"></div></div>` +
+      `<div class="full"><label class="field-label" for="fp${id}">${esc(d.purposeLabel || "What is this file used for? (optional)")}</label>` +
+        `<input class="field f-purpose" id="fp${id}" dir="auto" autocomplete="off" placeholder="${esc(d.purposePh || "")}"></div>` +
+    `</div>`;
+  $(".rep-list", rep).appendChild(el);
+  renumber(rep);
+  if (focus) $(".f-name", el).focus();
+  return el;
+}
+function resetRepeater(rep){
+  $(".rep-list", rep).innerHTML = "";
+  addEntry(rep, false);
+}
+document.addEventListener("click", e => {
+  const add = e.target.closest(".btn-add");
+  if (add) {
+    const rep = add.closest(".file-repeater");
+    addEntry(rep, true);
+    announce(`${rep.dataset.word || "File"} ${$$(".file-entry", rep).length} added.`);
+    updateProgress();
+    return;
+  }
+  const rem = e.target.closest(".btn-remove");
+  if (rem) {
+    const rep = rem.closest(".file-repeater"), entry = rem.closest(".file-entry");
+    const word = rep.dataset.word || "File";
+    if ($$(".file-entry", rep).length > 1) {
+      entry.remove(); renumber(rep);
+      announce(`${word} removed.`);
+      $(".btn-add", rep).focus();
+    } else {            // keep one (empty) entry so the person always has somewhere to type
+      $$("input", entry).forEach(i => { i.value = ""; i.removeAttribute("aria-invalid"); });
+      $$(".link-err", entry).forEach(x => x.textContent = "");
+      announce(`${word} cleared.`);
+      $(".f-name", entry).focus();
+    }
+    updateProgress();
+  }
+});
+document.addEventListener("focusout", e => { if (e.target.classList && e.target.classList.contains("f-link")) validateLink(e.target, true); });
+document.addEventListener("input", e => {
+  if (e.target.classList && e.target.classList.contains("f-link") && e.target.getAttribute("aria-invalid")) {
+    e.target.removeAttribute("aria-invalid"); e.target.parentElement.querySelector(".link-err").textContent = "";
+  }
+});
+
+/* ---------- conditional follow-up questions ---------- */
+let condSeq = 0;
+$$(".file-repeater").forEach(buildRepeater);
+$$(".cond").forEach(c => {
+  c.id = c.id || "cond" + (++condSeq);
+  const name = c.dataset.when.split("=")[0];
+  $$(`input[name="${name}"]`).forEach(i => {
+    const cur = (i.getAttribute("aria-controls") || "").split(" ").filter(Boolean);
+    if (!cur.includes(c.id)) cur.push(c.id);
+    i.setAttribute("aria-controls", cur.join(" "));
+  });
+});
+function condMet(c){
+  const eq = c.dataset.when.indexOf("=");
+  const name = c.dataset.when.slice(0, eq), list = c.dataset.when.slice(eq+1).split("|");
+  const checked = $$(`input[name="${name}"]`).filter(i => i.checked);
+  if (list[0] === "*") return checked.some(i => !NEUTRAL.has(i.value));
+  return checked.some(i => list.includes(i.value));
+}
+function setOpen(c, open){
+  c.classList.toggle("open", open);
+  if (open) { c.removeAttribute("inert"); c.removeAttribute("aria-hidden"); }
+  else { c.setAttribute("inert", ""); c.setAttribute("aria-hidden", "true"); }
+}
+function clearCond(c){
+  $$("input,textarea", c).forEach(el => {
+    if (el.closest(".file-repeater")) return;
+    if (el.type === "checkbox" || el.type === "radio") el.checked = false; else el.value = "";
+    el.removeAttribute("aria-invalid");
+  });
+  $$(".file-repeater", c).forEach(resetRepeater);
+}
+function evaluateConds(announceChanges){
+  const conds = $$(".cond"), changed = [];
+  for (let pass = 0; pass < 6; pass++) {
+    let any = false;
+    conds.forEach(c => {
+      const parent = c.parentElement.closest(".cond");
+      const should = condMet(c) && (!parent || parent.classList.contains("open"));
+      if (should !== c.classList.contains("open")) {
+        setOpen(c, should);
+        if (!should) clearCond(c);
+        changed.push([c, should]); any = true;
+      }
+    });
+    if (!any) break;
+  }
+  if (announceChanges && changed.length) {
+    const set = new Set(changed.map(x => x[0]));
+    const top = changed.filter(([c]) => { const p = c.parentElement.closest(".cond"); return !(p && set.has(p)); });
+    const net = new Map();
+    top.forEach(([c, open]) => net.set(c, open));
+    const msgs = [];
+    net.forEach((open, c) => msgs.push((open ? "More questions added: " : "Questions removed: ") + (c.dataset.label || "")));
+    if (msgs.length) announce(msgs.join(". "));
+  }
+}
+$$(".cond").forEach(c => setOpen(c, false));
+document.addEventListener("change", e => {
+  if (e.target.matches && e.target.matches('input[type="radio"],input[type="checkbox"]')) evaluateConds(true);
+  updateProgress();
+});
+document.addEventListener("input", updateProgress);
+
+/* ---------- progress (unchanged idea from the original) ---------- */
+function updateProgress(){
+  const answeredGroups = new Set($$(".choices input[type=radio]:checked").map(x => x.name));
+  const totalGroups = $$(".choices").length;
+  const checkedBoxes = $$("input[type=checkbox]:checked").length;
+  const textFields = $$("textarea,input.field").filter(x => x.id !== "date" && x.value.trim()).length;
+  const denominator = totalGroups + 12;
+  const score = Math.min(100, Math.round((answeredGroups.size + Math.min(12, checkedBoxes + textFields)) / denominator * 100));
+  $("#progressText").textContent = score + "%";
+  $("#progressFill").style.width = score + "%";
+}
+
+/* ---------- building the email text ---------- */
+function isOpen(el){
+  let c = el.closest(".cond");
+  while (c) { if (!c.classList.contains("open")) return false; c = c.parentElement.closest(".cond"); }
+  return true;
+}
+function fmtField(label, value, indent, keepInline){
+  const pad = IND.repeat(indent);
+  const v = String(value).replace(/\r\n?/g, "\n").trim();
+  if (v.includes("\n") || (v.length > 60 && !keepInline)) {
+    return [pad + label + ":"].concat(v.split("\n").map(l => l.trim() ? pad + IND + l.trim() : ""));
+  }
+  return [pad + label + ": " + v];
+}
+function reportRepeater(rep, indent){
+  const pad = IND.repeat(indent), word = rep.dataset.word || "File";
+  const entries = $$(".file-entry", rep).map(e => {
+    const link = $(".f-link", e).value, r = normalizeUrl(link);
+    return { name: $(".f-name", e).value.trim(), link: r.ok ? r.value : link.trim(), purpose: $(".f-purpose", e).value.trim() };
+  }).filter(e => e.name || e.link || e.purpose);
+  if (!entries.length) return [];
+  const out = ["", pad + (rep.dataset.email || "Files provided") + ":"];
+  entries.forEach((e, i) => {
+    out.push("", pad + word + " " + (i + 1));
+    if (e.name) out.push(...fmtField("Name", e.name, indent, true));
+    if (e.link) out.push(...fmtField("Link", e.link, indent, true));
+    if (e.purpose) out.push(...fmtField("Purpose", e.purpose, indent, true));
+  });
+  return out;
+}
+function reportQuestion(q){
+  const title = $(".q-title", q).textContent.trim();
+  const els = $$(".choices, .multi[data-group], input.field, textarea.field, .file-repeater", q).filter(el => {
+    if (!isOpen(el)) return false;
+    const rep = el.closest(".file-repeater");
+    return !(rep && rep !== el);
+  });
+  const primary = [], follow = [];
+  els.forEach(el => {
+    const inCond = !!el.closest(".cond");
+    const target = inCond ? follow : primary, indent = inCond ? 1 : 0;
+    if (el.classList.contains("choices")) {
+      const c = $("input:checked", el);
+      if (c) target.push(...fmtField("Answer", c.value, indent));
+    } else if (el.classList.contains("multi")) {
+      const vals = $$("input:checked", el).map(i => i.value);
+      if (vals.length) {
+        const label = inCond ? (el.dataset.elabel || "Selected") : "Answer";
+        target.push(IND.repeat(indent) + label + ":", ...vals.map(v => IND.repeat(indent + 1) + "- " + v));
+      }
+    } else if (el.classList.contains("file-repeater")) {
+      target.push(...reportRepeater(el, indent));
+    } else if (el.value && el.value.trim()) {
+      target.push(...fmtField(el.dataset.elabel || "Answer", el.value, indent));
+    }
+  });
+  if (!primary.length && !follow.length) return [];
+  const out = [title, ""].concat(primary);
+  if (follow.length) { out.push(""); out.push(...follow); }
+  return out;
+}
+function collapseBlank(lines){
+  const out = [];
+  lines.forEach(l => { if (l === "" && out.length && out[out.length - 1] === "") return; out.push(l); });
+  while (out.length && out[out.length - 1] === "") out.pop();
+  return out;
+}
+function buildReport(){
+  const respondent = $("#respondent").value.trim(), date = $("#date").value;
+  const lines = [
+    "EMPLOYEE INFORMATION & RECORDS",
+    "DISCOVERY QUESTIONNAIRE — COMPLETED RESPONSE",
+    "",
+    "Respondent: " + (respondent || "Not provided"),
+    "Date: " + (date || "Not provided")
+  ];
+  const empty = [];
+  $$(".section").forEach(section => {
+    const n = $(".section-num", section).textContent.trim();
+    const heading = $("h2", section).textContent.trim();
+    const blocks = $$(".question", section).map(reportQuestion).filter(b => b.length);
+    if (!blocks.length) { empty.push(n); return; }
+    lines.push("", BAR, `SECTION ${n} — ${heading.toUpperCase()}`, BAR, "");
+    blocks.forEach((b, i) => { if (i) lines.push(""); lines.push(...b); });
+  });
+  if (empty.length === 9) lines.push("", "No answers have been entered.");
+  else if (empty.length) lines.push("", "No answers were given in section" + (empty.length > 1 ? "s" : "") + ": " + empty.join(", ") + ".");
+  lines.push("", BAR, "End of response", BAR);
+  return collapseBlank(lines).join("\n");
+}
+
+/* ---------- validation, review, copy ---------- */
+function validateAll(){
+  const bad = [];
+  $$(".f-link").forEach(i => { if (isOpen(i) && i.value.trim() && !validateLink(i, true)) bad.push(i); });
+  return bad;
+}
+function entryLabel(input){
+  const e = input.closest(".file-entry"), rep = input.closest(".file-repeater");
+  return $(".file-entry-title", e).textContent + " (" + (rep.dataset.title || "files") + ")";
+}
+function showStatus(kind, msg){
+  const s = $("#sendStatus");
+  s.className = "status show" + (kind ? " " + kind : "");
+  s.textContent = msg;
+}
+function hideStatus(){ $("#sendStatus").className = "status"; $("#fallback").classList.remove("show"); }
+function renderReview(text){
+  const box = $("#reviewBox");
+  box.innerHTML = "";
+  text.split("\n").forEach(line => { const d = document.createElement("div"); d.setAttribute("dir", "auto"); d.textContent = line; box.appendChild(d); });
+  box.style.display = "block";
+  $("#copyActions").style.display = "flex";
+}
+async function copyText(text){
+  try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return true; } } catch (e) {}
+  try {
+    const a = document.createElement("textarea");
+    a.value = text; a.setAttribute("readonly", ""); a.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(a); a.focus(); a.select(); a.setSelectionRange(0, a.value.length);
+    const ok = document.execCommand("copy"); a.remove(); return ok;
+  } catch (e) { return false; }
+}
+$$(".js-copy").forEach(btn => btn.addEventListener("click", async () => {
+  const text = buildReport();
+  const ok = await copyText(text);
+  if (!ok) renderReview(text);
+  btn.textContent = ok ? "Copied ✓" : "Could not copy — select the text in the box";
+  setTimeout(() => { btn.textContent = btn.dataset.label; }, 2500);
+}));
+$("#reviewBtn").addEventListener("click", () => {
+  const bad = validateAll();
+  const text = buildReport();
+  renderReview(text);
+  if (bad.length) showStatus("error", "Please check the link in: " + bad.map(entryLabel).join("; ") + ". It is shown in red above.");
+  else hideStatus();
+  $("#reviewBox").scrollIntoView({ behavior: "smooth", block: "nearest" });
+});
+$("#printBtn").addEventListener("click", () => { renderReview(buildReport()); window.print(); });
+
+/* ---------- sending ---------- */
+function isMobileDevice(){
+  const uad = navigator.userAgentData;
+  if (uad && uad.mobile === true) return true;
+  if (/Android|iPhone|iPad|iPod|Mobile|Windows Phone|webOS|BlackBerry/i.test(navigator.userAgent || "")) return true;
+  return navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;   // iPadOS reports a Mac
+}
+const MOBILE = isMobileDevice();
+if (!MOBILE) $("#mailtoBtn").hidden = false;
+
+function mailtoUrl(body){
+  let u = "mailto:" + RECIPIENT + "?subject=" + encodeURIComponent(SUBJECT);
+  if (body) u += "&body=" + encodeURIComponent(body.replace(/\r?\n/g, "\r\n"));
+  return u;
+}
+function gmailUrl(body){
+  return "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(RECIPIENT) +
+    "&su=" + encodeURIComponent(SUBJECT) + "&body=" + encodeURIComponent(body);
+}
+function launchMailto(url){
+  const a = document.createElement("a");
+  a.href = url; a.style.display = "none";
+  document.body.appendChild(a); a.click(); a.remove();
+}
+async function showFallback(text, reason){
+  const copied = await copyText(text);
+  renderReview(text);
+  const why = reason === "blocked" ? "Your browser did not allow the email window to open."
+    : reason === "error" ? "The answers could not be placed in an email link automatically."
+    : "Your answers are too long to place in an email link without risking that part of them gets cut off.";
+  $("#fallbackMsg").textContent = why + (copied ? " Your answers have been copied." : " Please select Copy answers.");
+  $("#sendStatus").className = "status";
+  $("#fallback").classList.add("show");
+  $("#fallback").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  announce("Please paste your answers into an email. " + (copied ? "Answers copied." : ""));
+}
+function prepareToSend(){
+  const bad = validateAll();
+  if (bad.length) {
+    showStatus("error", "Please check the link in: " + bad.map(entryLabel).join("; ") + ". Correct it or clear it, then try again.");
+    bad[0].focus();
+    return null;
+  }
+  const text = buildReport();
+  renderReview(text);
+  $("#fallback").classList.remove("show");
+  return text;
+}
+const SENT_NOTE = " Nothing has been sent yet — please read the draft and press Send yourself. If it did not open, or looks cut short, select Copy answers and paste them into a new email.";
+async function sendPrimary(){
+  const text = prepareToSend(); if (text === null) return;
+  try {
+    if (MOBILE) {
+      const url = mailtoUrl(text);
+      if (url.length > LIMITS.mobileMailto) return showFallback(text, "long");
+      launchMailto(url);
+      showStatus("ok", "Your email app should now be opening with a draft message." + SENT_NOTE);
+    } else {
+      const url = gmailUrl(text);
+      if (url.length > LIMITS.desktopGmail) return showFallback(text, "long");
+      const w = window.open(url, "_blank");
+      if (!w) return showFallback(text, "blocked");
+      try { w.opener = null; } catch (e) {}
+      showStatus("ok", "A Gmail draft should now be open in a new tab." + SENT_NOTE);
+    }
+  } catch (e) { showFallback(text, "error"); }
+}
+async function sendMailto(){
+  const text = prepareToSend(); if (text === null) return;
+  try {
+    const url = mailtoUrl(text);
+    if (url.length > LIMITS.desktopMailto) return showFallback(text, "long");
+    launchMailto(url);
+    showStatus("ok", "Your default email app should now be opening with a draft message." + SENT_NOTE);
+  } catch (e) { showFallback(text, "error"); }
+}
+$("#emailBtn").addEventListener("click", sendPrimary);
+$("#mailtoBtn").addEventListener("click", sendMailto);
+$("#emptyMailBtn").addEventListener("click", () => launchMailto(mailtoUrl("")));
+
+/* ---------- section highlight in the side menu ---------- */
+const sections = $$(".section");
+const navLinks = $$("#sectionNav a");
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) navLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + entry.target.id));
+  });
+}, { rootMargin: "-18% 0px -68% 0px" });
+sections.forEach(s => observer.observe(s));
+
+evaluateConds(false);
+updateProgress();
+})();
+</script>
+</body>
+</html>
